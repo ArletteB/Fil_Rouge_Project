@@ -1,6 +1,6 @@
-import { Timestamp } from 'src/Generic/timestamp.entity';
-import { PostEntity } from 'src/post/entities/post.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { Timestamp } from '../../Generic/timestamp.entity';
+import { PostEntity } from '../../post/entities/post.entity';
+import { UserEntity } from '../../user/entities/user.entity';
 import {
   Column,
   Entity,

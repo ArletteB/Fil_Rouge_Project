@@ -1,6 +1,6 @@
-import { CommentEntity } from 'src/comment/entities/comment.entity';
-import { GroupeEntity } from 'src/groupe/entities/groupe.entity';
-import { PostEntity } from 'src/post/entities/post.entity';
+import { CommentEntity } from '../../comment/entities/comment.entity';
+import { GroupeEntity } from '../../groupe/entities/groupe.entity';
+import { PostEntity } from '../../post/entities/post.entity';
 import {
   Column,
   Entity,

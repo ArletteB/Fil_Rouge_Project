@@ -1,7 +1,7 @@
-import { CommentEntity } from 'src/comment/entities/comment.entity';
-import { Timestamp } from 'src/Generic/timestamp.entity';
-import { GroupeEntity } from 'src/groupe/entities/groupe.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { CommentEntity } from '../../comment/entities/comment.entity';
+import { Timestamp } from '../../Generic/timestamp.entity';
+import { GroupeEntity } from '../../groupe/entities/groupe.entity';
+import { UserEntity } from '../../user/entities/user.entity';
 import {
   Column,
   Entity,
