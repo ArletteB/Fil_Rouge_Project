@@ -10,7 +10,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
-  ) {}
+  ) { }
 
   async validateUser(signinAuthDto: SigninAuthDto) {
     const user = await this.userService.findOneByEmail(signinAuthDto.email);
@@ -19,6 +19,7 @@ export class AuthService {
       user.password,
     );
     if (user && validPassword) {
+      // TODO:  Cacher le password plutard
       const { password, ...result } = user;
       return result;
     } else {
