@@ -30,10 +30,14 @@ export class GroupeService {
       throw new Error('Error while getting groupes');
     }
   }
-
   async findOneById(id: number) {
     try {
-      const groupe = await this.groupeRepository.findOneBy({ id });
+      const groupe = await this.groupeRepository
+        .createQueryBuilder('groupe')
+        .leftJoinAndSelect('groupe.posts', 'groupe.users', 'post')
+        .where('groupe.id = :id', { id })
+        .getOne();
+
       return groupe;
     } catch (error) {
       throw new Error('Error while getting groupe');

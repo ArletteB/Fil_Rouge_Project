@@ -27,9 +27,8 @@ export class UserService {
     return await this.userRepository.findOneBy({ email });
   }
 
-  findAll() {
-    const users = this.userRepository.find();
-    return users;
+  async findAll() {
+    return await this.userRepository.find();
   }
 
   findOne(id: number) {
@@ -40,7 +39,17 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  softRemove(id: number) {
-    return `This action removes a #${id} user`;
+  async softRemove(id: number) {
+    return await this.userRepository.softDelete(id);
+  }
+
+  async updatePassword(user: UserEntity, password: string) {
+    try {
+      user.password = await bcrypt.hash(password, 10);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while updating password');
+    }
   }
 }

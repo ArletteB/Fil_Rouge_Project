@@ -1,3 +1,4 @@
+import { ResetPasswordEntity } from 'src/auth/reset-password/entities/token-reset.entity';
 import { CommentEntity } from '../../comment/entities/comment.entity';
 import { GroupeEntity } from '../../groupe/entities/groupe.entity';
 import { PostEntity } from '../../post/entities/post.entity';
@@ -6,6 +7,7 @@ import {
   Entity,
   ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -56,4 +58,7 @@ export class UserEntity {
 
   @OneToMany(() => PostEntity, (comment) => comment.author)
   posts: PostEntity[];
+
+  @OneToOne(() => ResetPasswordEntity, (resetPassword) => resetPassword.user)
+  resetPassword: ResetPasswordEntity;
 }

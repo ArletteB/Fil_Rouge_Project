@@ -8,6 +8,8 @@ import { UserModule } from './user/user.module';
 import { GroupeModule } from './groupe/groupe.module';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
+// import { PasswordModule } from './password/password.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { CommentModule } from './comment/comment.module';
     GroupeModule,
     PostModule,
     CommentModule,
+    MailModule,
+    // PasswordModule,
   ],
   controllers: [AppController],
   providers: [AppService],
