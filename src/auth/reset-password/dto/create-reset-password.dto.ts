@@ -1,3 +1,3 @@
 export class CreateResetPasswordDto {
-  email: string;
+  id: string;
 }

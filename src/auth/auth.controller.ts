@@ -5,6 +5,7 @@ import { SigninAuthDto } from './dto/signin-auth.dto';
 // import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { CreateResetPasswordDto } from './reset-password/dto/create-reset-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,8 +22,8 @@ export class AuthController {
   }
 
   @Post('forgot-password')
-  async forgotPassword(@Body() createResetPasswordDto: CreateResetPasswordDto) {
-    return this.authService.forgotPassword(createResetPasswordDto);
+  async forgotPassword(@Body() forgotPassword: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPassword);
   }
 
   @Post('reset-password/:token')

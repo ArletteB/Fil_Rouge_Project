@@ -6,4 +6,5 @@ export class SignupAuthDto {
   imgProfile?: string;
   bio?: string;
   gender?: string;
+  resetPassword: Object;
 }

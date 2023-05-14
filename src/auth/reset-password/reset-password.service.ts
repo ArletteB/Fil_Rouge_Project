@@ -1,71 +1,68 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  NotFoundException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ResetPasswordEntity } from './entities/token-reset.entity';
+import { ResetPasswordTokenEntity } from './entities/reset-token.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { createHash } from 'crypto';
+import { createHmac } from 'crypto';
 import { UserService } from 'src/user/user.service';
 import { CreateResetPasswordDto } from './dto/create-reset-password.dto';
 import { UpdateResetPasswordDto } from './dto/update-reset-password.dto';
 
 @Injectable()
-export class ResetPasswordService {
+export class ResetPasswordTokenService {
   constructor(
-    @InjectRepository(ResetPasswordEntity)
-    private readonly resetPasswordRepository: Repository<ResetPasswordEntity>,
+    @InjectRepository(ResetPasswordTokenEntity)
+    private readonly resetPasswordTokenRepository: Repository<ResetPasswordTokenEntity>,
     private readonly userService: UserService,
   ) {}
-
-  async create(createResetPasswordDto: CreateResetPasswordDto) {
-    const user = await this.userService.findOneByEmail(
-      createResetPasswordDto.email,
-    );
-    if (!user) {
-      throw new HttpException('User not found', 404);
+  async create(userId: string) {
+    // const user = await this.userService.findOneByEmail(
+    //   createResetPasswordDto.email,
+    // );
+    // if (!user) {
+    //   throw new NotFoundException('User not found');
+    // }
+    try {
+      const token = createHmac('sha256', uuidv4()).digest('hex');
+      return await this.resetPasswordTokenRepository.save({
+        token,
+        userId,
+      });
+    } catch (error) {
+      throw new BadRequestException(error);
     }
-    const tokenFound = await this.findOneByEmail(createResetPasswordDto.email);
-    if (tokenFound) {
-      return tokenFound;
-    }
-
-    const token = uuidv4();
-
-    const newToken = await this.resetPasswordRepository.create({
-      user: user,
-      token,
-    });
-
-    return this.resetPasswordRepository.save(newToken);
   }
 
   async findOneByEmail(email: string) {
-    const user = await this.userService.findOneByEmail(email);
+    console.log('email', email);
+    const user: any = await this.userService.findOneByEmail(email);
+    console.log('user', user);
     if (!user) {
-      throw new HttpException('User not found', 404);
+      throw new NotFoundException('User not found');
     }
-    const token = await this.resetPasswordRepository
-      .createQueryBuilder('resetPassword')
-      .leftJoinAndSelect('resetPassword.user', 'user')
-      .where('user.email = :email', { email })
-      .getOne();
+    const token = await this.resetPasswordTokenRepository.findOne({
+      where: { user: user },
+      relations: ['user'],
+    });
+
+    console.log('findOneByEmail token', token);
+
     return token;
   }
-
-  findAll() {
-    return `This action returns all resetPassword`;
-  }
-
-  findOne(token: string) {
-    const tokenFound = this.resetPasswordRepository.findOne({
+  async findOne(token: string) {
+    const tokenFound = await this.resetPasswordTokenRepository.findOne({
       where: { token },
+      relations: ['user'],
     });
-    if (!tokenFound) {
-      throw new HttpException('Token not found', 404);
-    }
+
     return tokenFound;
   }
 
   async remove(id: number) {
-    return await this.resetPasswordRepository.softDelete(id);
+    return await this.resetPasswordTokenRepository.softDelete(id);
   }
 }

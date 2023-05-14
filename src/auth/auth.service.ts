@@ -5,7 +5,7 @@ import { SigninAuthDto } from './dto/signin-auth.dto';
 import { SignupAuthDto } from './dto/signup-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { ResetPasswordService } from './reset-password/reset-password.service';
+import { ResetPasswordTokenService } from './reset-password/reset-password.service';
 
 import { CreateResetPasswordDto } from './reset-password/dto/create-reset-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
-    private resetPasswordService: ResetPasswordService,
+    private resetPasswordTokenService: ResetPasswordTokenService,
     private mailService: MailService,
   ) {}
 
@@ -53,33 +53,35 @@ export class AuthService {
     };
   }
 
-  async forgotPassword(createResetPasswordDto: CreateResetPasswordDto) {
-    const token = await this.resetPasswordService.create(
-      createResetPasswordDto,
-    );
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const user = await this.userService.findOneByEmail(forgotPasswordDto.email);
 
-    const url = `http://localhost:3000/auth/reset-password/${token}`;
-    const message = `Click here to reset your password: <a href="${url}">${url}</a>`;
-    await this.mailService.sendEmail(
-      createResetPasswordDto.email,
-      'Reset Password',
-      message,
-    );
-    return {
-      message: 'Reset password link sent successfully',
-    };
+    if (!user) {
+      throw new BadRequestException('Invalid email');
+    }
+    const token = await this.resetPasswordTokenService.create(user.id);
 
-    // this.mailService.create({
-    //   to: createResetPasswordDto.email,
-    //   subject: 'Reset password',
-    //   // template: 'reset-password',
-    //   html: `<a href="http://localhost:3000/auth/reset-password/${token}">Reset password</a>`,
-    // });
-    // return `Password reset link sent to ${createResetPasswordDto.email}`;
+    const userUpdated = await this.userService.update(user.id, {
+      resetPassword: token.id,
+    });
+    console.log('userUpdated', userUpdated);
+    // await this.mailService.ForgotPasswordSendMail(
+    //   forgotPasswordDto.email,
+    //   `${process.env.CLIENT_APP_URL}/reset-password/${token.token}`,
+    // );
+    // return userUpdated;
   }
 
+  // async forgotPassword(createResetPasswordDto: CreateResetPasswordDto) {
+  //   const token = await this.ResetPasswordTokenService.create(
+  //     createResetPasswordDto,
+  //   );
+
+  //   return token;
+  // }
+
   async resetPassword(token: string, resetPasswordDto: ResetPasswordDto) {
-    const resetPassword = await this.resetPasswordService.findOne(token);
+    const resetPassword = await this.resetPasswordTokenService.findOne(token);
     if (!resetPassword) {
       throw new BadRequestException('Invalid token');
     }
@@ -96,7 +98,7 @@ export class AuthService {
     //   message: 'Password updated successfully',
     // };
 
-    await this.resetPasswordService.remove(resetPassword.id);
-    return await this.userService.update(user.id, { password: hashedPassword });
+    // await this.resetPasswordTokenService.remove(resetPassword.id);
+    // return await this.userService.update(user.id, { password: hashedPassword });
   }
 }

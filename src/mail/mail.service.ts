@@ -1,14 +1,30 @@
-// import { MailerService } from '@nestjs-modules/mailer';
+import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-// import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 import * as nodemailer from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
-  sendEmail(email: string, arg1: string, message: string) {
-    throw new Error('Method not implemented.');
+  // sendEmail(email: string, arg1: string, message: string) {
+  //   throw new Error('Method not implemented.');
+  // }
+  constructor(
+    private mailerService: MailerService,
+    private configService: ConfigService,
+  ) {}
+
+  async ForgotPasswordSendMail(reciever: string, resetLink: string) {
+    await this.mailerService.sendMail({
+      to: reciever,
+      from: this.configService.get('MAIL_FROM'),
+      subject: 'Reset Password',
+      // template: './forgot-password',
+      text: 'Reset your Password',
+      html: ` <p>You have send demand to reset your password</p>
+      <a href="${resetLink}}">Reset your password here</a>`,
+    });
   }
-  // constructor(private mailerService: MailerService) {}
 
   // async sendUserConfirmation(user: UserEntity, token: string) {
   //   const url = `example.com/auth/confirm?token=${token}`;
@@ -25,33 +41,33 @@ export class MailService {
   //     },
   //   });
   // }
-  createTransporter() {
-    return nodemailer.createTransport({
-      service: 'localhost',
-      // port: process.env.MAILDEV_SMTP_PORT,
-      secure: false,
-      // host: process.env.SMTP_HOST,
-      // auth: {
-      //   user: process.env.SMTP_USER,
-      //   pass: process.env.SMTP_PASSWORD,
-      // },
-    });
-  }
+  // createTransporter() {
+  //   return nodemailer.createTransport({
+  //     service: 'localhost',
+  //     // port: process.env.MAILDEV_SMTP_PORT,
+  //     secure: false,
+  //     // host: process.env.SMTP_HOST,
+  //     // auth: {
+  //     //   user: process.env.SMTP_USER,
+  //     //   pass: process.env.SMTP_PASSWORD,
+  //     // },
+  //   });
+  // }
 
-  async create() {
-    const transporter = this.createTransporter();
-    const mailOptions = {
-      from: 'vosin@gmail.com',
-      to: 'testtonvoisin',
-      subject: 'test',
-      html: '<h1>test</h1>',
-    };
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('Email sent:' + info.response);
-      }
-    });
-  }
+  // async create() {
+  //   const transporter = this.createTransporter();
+  //   const mailOptions = {
+  //     from: 'vosin@gmail.com',
+  //     to: 'testtonvoisin',
+  //     subject: 'test',
+  //     html: '<h1>test</h1>',
+  //   };
+  //   transporter.sendMail(mailOptions, (err, info) => {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       console.log('Email sent:' + info.response);
+  //     }
+  //   });
+  // }
 }

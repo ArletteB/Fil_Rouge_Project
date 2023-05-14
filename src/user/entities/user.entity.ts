@@ -1,4 +1,4 @@
-import { ResetPasswordEntity } from 'src/auth/reset-password/entities/token-reset.entity';
+import { ResetPasswordTokenEntity } from 'src/auth/reset-password/entities/reset-token.entity';
 import { CommentEntity } from '../../comment/entities/comment.entity';
 import { GroupeEntity } from '../../groupe/entities/groupe.entity';
 import { PostEntity } from '../../post/entities/post.entity';
@@ -17,7 +17,7 @@ export class UserEntity {
     throw new Error('Method not implemented.');
   }
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column({
     nullable: true,
@@ -59,6 +59,9 @@ export class UserEntity {
   @OneToMany(() => PostEntity, (comment) => comment.author)
   posts: PostEntity[];
 
-  @OneToOne(() => ResetPasswordEntity, (resetPassword) => resetPassword.user)
-  resetPassword: ResetPasswordEntity;
+  @OneToOne(
+    () => ResetPasswordTokenEntity,
+    (resetPassword) => resetPassword.user,
+  )
+  resetPassword: ResetPasswordTokenEntity;
 }

@@ -10,13 +10,14 @@ import { ResetPasswordModule } from './reset-password/reset-password.module';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { ResetPasswordEntity } from './reset-password/entities/token-reset.entity';
-import { ResetPasswordService } from './reset-password/reset-password.service';
+import { ResetPasswordTokenEntity } from './reset-password/entities/reset-token.entity';
+import { ResetPasswordTokenService } from './reset-password/reset-password.service';
 import { MailService } from 'src/mail/mail.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, ResetPasswordEntity]),
+    ConfigModule.forRoot(),
+    TypeOrmModule.forFeature([UserEntity, ResetPasswordTokenEntity]),
     ConfigModule.forRoot(),
     UserModule,
     MailModule,
@@ -28,7 +29,7 @@ import { MailService } from 'src/mail/mail.service';
     ResetPasswordModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, MailService, ResetPasswordService],
+  providers: [AuthService, JwtStrategy, MailService, ResetPasswordTokenService],
   exports: [AuthService],
 })
 export class AuthModule {}

@@ -1,9 +1,14 @@
-import { Timestamp } from 'src/Generic/timestamp.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity('reset-password')
-export class ResetPasswordEntity extends Timestamp {
+@Entity('reset-password-token')
+export class ResetPasswordTokenEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -11,5 +16,6 @@ export class ResetPasswordEntity extends Timestamp {
   token: string;
 
   @OneToOne(() => UserEntity, (user) => user.resetPassword)
+  @JoinColumn()
   user: UserEntity;
 }
