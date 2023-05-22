@@ -24,7 +24,7 @@ export class MailService {
   public async sendForgotPasswordMail(reciever: string, resetLink: string) {
     await this.mailerService.sendMail({
       to: reciever,
-      from: this.configService.get('MAILER_EMAIL'),
+      from: process.env.MAILER_EMAIL,
       subject: 'Reset password demand',
       text: 'welcome',
       html: `<div>

@@ -58,11 +58,10 @@ export class AuthService {
     const updateUser = await this.userService.update(user.id, {
       resetPasswordToken: resetToken,
     });
-    // await this.mailService.sendForgotPasswordMail(
-    //   forgotPasswordDto.email,
-    //   `${process.env.CLIENT_APP_URL}/reset-password/${resetToken.token}`,
-    // );
-    // console.log('updateUser', updateUser);
+    await this.mailService.sendForgotPasswordMail(
+      forgotPasswordDto.email,
+      `${process.env.CLIENT_APP_URL}/reset-password/${resetToken.token}`,
+    );
     return updateUser;
   }
 

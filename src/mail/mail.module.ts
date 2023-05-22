@@ -22,13 +22,13 @@ import { ConfigModule } from '@nestjs/config';
       defaults: {
         from: `"No Reply" <${process.env.MAIL_FROM}>`,
       },
-      template: {
-        dir: join(__dirname, 'templates'),
-        adapter: new HandlebarsAdapter(),
-        options: {
-          strict: true,
-        },
-      },
+      // template: {
+      //   dir: join(__dirname, 'templates'),
+      //   adapter: new HandlebarsAdapter(),
+      //   options: {
+      //     strict: true,
+      //   },
+      // },
     }),
   ],
   providers: [MailService],
