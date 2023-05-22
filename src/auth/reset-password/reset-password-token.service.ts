@@ -21,13 +21,19 @@ export class ResetPasswordTokenService {
   ) {}
   async create(userId: string) {
     try {
-      const token = createHmac('sha256', `${process.env.JWT_SECRET}`).digest(
-        'hex',
-      );
-      return await this.resetPasswordTokenRepository.save({ token, userId });
+      const token = createHmac('sha256', `${process.env.JWT_SECRET}`)
+        .update(`${Date.now()}`)
+        .digest('hex');
+
+      console.log('token', token);
+
+      const user = await this.userService.findOne(userId);
+
+      return await this.resetPasswordTokenRepository.save({ token, user });
     } catch (error) {
-      throw new BadRequestException(error);
-      // throw new HttpException('', 400);
+      console.log(error);
+      // throw new BadRequestException(error);
+      throw new HttpException('Token not found', 400);
     }
   }
   async findAll() {

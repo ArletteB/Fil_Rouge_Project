@@ -4,7 +4,7 @@ import { SignupAuthDto } from './dto/signup-auth.dto';
 import { SigninAuthDto } from './dto/signin-auth.dto';
 // import { ForgotPasswordDto } from './dto/forgot-password.dto';
 // import { ResetPasswordDto } from './dto/reset-password.dto';
-// import { CreateResetPasswordDto } from './reset-password/dto/create-reset-password.dto';
+// import { CreateResetPasswordTokenDto } from './reset-password/dto/create-reset-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 

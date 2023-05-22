@@ -31,8 +31,8 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    return await this.userRepository.findOneBy({ id });
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
@@ -43,7 +43,7 @@ export class UserService {
     }
   }
 
-  async softRemove(id: number) {
+  async softRemove(id: string) {
     return await this.userRepository.softDelete(id);
   }
 

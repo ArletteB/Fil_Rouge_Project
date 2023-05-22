@@ -53,7 +53,7 @@ export class AuthService {
   }
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
     const user = await this.userService.findOneByEmail(forgotPasswordDto.email);
-    console.log('user', user);
+
     const resetToken = await this.resetPasswordTokenService.create(user.id);
     const updateUser = await this.userService.update(user.id, {
       resetPasswordToken: resetToken,

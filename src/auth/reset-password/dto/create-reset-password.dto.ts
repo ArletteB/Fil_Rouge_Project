@@ -1,3 +1,3 @@
-export class CreateResetPasswordDto {
-  id: string;
+export class CreateResetPasswordTokenDto {
+  email: string;
 }
