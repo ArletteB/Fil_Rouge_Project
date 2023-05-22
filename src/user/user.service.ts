@@ -10,15 +10,15 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     try {
       createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
       return await this.userRepository.save(createUserDto);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       throw new Error('Error while creating user');
     }
   }

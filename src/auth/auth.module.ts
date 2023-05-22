@@ -6,13 +6,13 @@ import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './strategy/passport-jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { MailModule } from 'src/mail/mail.module';
-import { ResetPasswordModule } from './reset-password/reset-password.module';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { ResetPasswordTokenEntity } from './reset-password/entities/reset-token.entity';
-import { ResetPasswordTokenService } from './reset-password/reset-password.service';
+import { ResetPasswordTokenEntity } from './reset-password/entities/reset-password-token.entity';
+import { ResetPasswordTokenService } from './reset-password/reset-password-token.service';
 import { MailService } from 'src/mail/mail.service';
+import { ResetPasswordTokenModule } from './reset-password/reset-password-token.module';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import { MailService } from 'src/mail/mail.service';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '90s' },
     }),
-    ResetPasswordModule,
+    ResetPasswordTokenModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, MailService, ResetPasswordTokenService],

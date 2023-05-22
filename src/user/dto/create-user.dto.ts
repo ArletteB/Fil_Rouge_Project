@@ -6,5 +6,5 @@ export class CreateUserDto {
   imgProfile?: string;
   bio?: string;
   gender?: string;
-  resetPassword: Object;
+  resetPasswordToken?: Object;
 }

@@ -12,7 +12,7 @@ import { ConfigModule } from '@nestjs/config';
       transport: {
         service: 'localhost',
         host: process.env.MAIL_HOST,
-        port: Number(process.env.MAILDEV_SMTP_POR),
+        port: Number(process.env.MAILDEV_SMTP_PORT),
         secure: false,
         auth: {
           user: process.env.MAIL_USER,

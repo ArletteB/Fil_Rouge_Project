@@ -1,13 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { SigninAuthDto } from './dto/signin-auth.dto';
 import { SignupAuthDto } from './dto/signup-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { ResetPasswordTokenService } from './reset-password/reset-password.service';
+import { ResetPasswordTokenService } from './reset-password/reset-password-token.service';
 
-import { CreateResetPasswordDto } from './reset-password/dto/create-reset-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { MailService } from 'src/mail/mail.service';
 
@@ -52,53 +51,38 @@ export class AuthService {
       access_token: this.generateJwtToken(payload),
     };
   }
-
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
     const user = await this.userService.findOneByEmail(forgotPasswordDto.email);
-
-    if (!user) {
-      throw new BadRequestException('Invalid email');
-    }
-    const token = await this.resetPasswordTokenService.create(user.id);
-
-    const userUpdated = await this.userService.update(user.id, {
-      resetPassword: token.id,
+    console.log('user', user);
+    const resetToken = await this.resetPasswordTokenService.create(user.id);
+    const updateUser = await this.userService.update(user.id, {
+      resetPasswordToken: resetToken,
     });
-    console.log('userUpdated', userUpdated);
-    // await this.mailService.ForgotPasswordSendMail(
+    // await this.mailService.sendForgotPasswordMail(
     //   forgotPasswordDto.email,
-    //   `${process.env.CLIENT_APP_URL}/reset-password/${token.token}`,
+    //   `${process.env.CLIENT_APP_URL}/reset-password/${resetToken.token}`,
     // );
-    // return userUpdated;
+    // console.log('updateUser', updateUser);
+    return updateUser;
   }
 
-  // async forgotPassword(createResetPasswordDto: CreateResetPasswordDto) {
-  //   const token = await this.ResetPasswordTokenService.create(
-  //     createResetPasswordDto,
-  //   );
-
-  //   return token;
-  // }
-
-  async resetPassword(token: string, resetPasswordDto: ResetPasswordDto) {
-    const resetPassword = await this.resetPasswordTokenService.findOne(token);
-    if (!resetPassword) {
-      throw new BadRequestException('Invalid token');
-    }
-    const user = await this.userService.findOneByEmail(
-      resetPassword.user.email,
+  async resetPassword(resetToken: string, resetPasswordDto: ResetPasswordDto) {
+    const token = await this.resetPasswordTokenService.findOneByToken(
+      resetToken,
     );
-    if (!user) {
-      throw new BadRequestException('Invalid token');
+    if (!token) {
+      throw new HttpException('Token not found', 400);
     }
-    const hashedPassword = await bcrypt.hash(resetPasswordDto.password, 12);
-
-    // await this.userService.update(user.id, { password: hashedPassword });
-    // return {
-    //   message: 'Password updated successfully',
-    // };
-
-    // await this.resetPasswordTokenService.remove(resetPassword.id);
-    // return await this.userService.update(user.id, { password: hashedPassword });
+    const user = await this.userService.findOneByEmail(token.user.email);
+    if (!user) {
+      throw new HttpException('User not found', 400);
+    }
+    const updateUser = await this.userService.update(user.id, {
+      ...user,
+      password: await bcrypt.hash(resetPasswordDto.password, 10),
+    });
+    await this.resetPasswordTokenService.remove(token.id);
+    await this.mailService.sendConfirmResetPasswordMail(user.email);
+    return updateUser;
   }
 }
