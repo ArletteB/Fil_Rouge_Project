@@ -25,15 +25,15 @@ export class ResetPasswordTokenService {
         .update(`${Date.now()}`)
         .digest('hex');
 
-      console.log('token', token);
-
+      // console.log('token', token);
       const user = await this.userService.findOne(userId);
 
+      console.log('user', user);
       return await this.resetPasswordTokenRepository.save({ token, user });
     } catch (error) {
       console.log(error);
       // throw new BadRequestException(error);
-      throw new HttpException('Token not found', 400);
+      throw new HttpException(' not found', 400);
     }
   }
   async findAll() {
@@ -49,15 +49,13 @@ export class ResetPasswordTokenService {
   }
 
   async findOneByToken(token: string) {
-    try {
-      return await this.resetPasswordTokenRepository
-        .createQueryBuilder('resetPasswordToken')
-        .where('resetPasswordToken.token = :token', { token })
-        .leftJoinAndSelect('resetPasswordToken.user', 'user')
-        .getOne();
-    } catch (error) {
-      throw new NotFoundException(error);
-    }
+    const findToken = await this.resetPasswordTokenRepository
+      .createQueryBuilder('resetPasswordToken')
+      .leftJoinAndSelect('resetPasswordToken.user', 'user')
+      .where('resetPasswordToken.token = :token', { token })
+      .getOne();
+
+    return findToken;
   }
 
   async findOneByEmail(email: string) {
@@ -76,14 +74,14 @@ export class ResetPasswordTokenService {
 
     return token;
   }
-  async findOne(token: string) {
-    const tokenFound = await this.resetPasswordTokenRepository.findOne({
-      where: { token },
-      relations: ['user'],
-    });
+  // async findOne(token: string) {
+  //   const tokenFound = await this.resetPasswordTokenRepository.findOne({
+  //     where: { token },
+  //     relations: ['user'],
+  //   });
 
-    return tokenFound;
-  }
+  //   return tokenFound;
+  // }
 
   async update(
     id: string,

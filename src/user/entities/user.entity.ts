@@ -17,7 +17,7 @@ export class UserEntity {
   comparePassword(password: string) {
     throw new Error('Method not implemented.');
   }
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({

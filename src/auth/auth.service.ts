@@ -51,7 +51,9 @@ export class AuthService {
       access_token: this.generateJwtToken(payload),
     };
   }
+
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    console.log(forgotPasswordDto);
     const user = await this.userService.findOneByEmail(forgotPasswordDto.email);
 
     const resetToken = await this.resetPasswordTokenService.create(user.id);
@@ -69,6 +71,7 @@ export class AuthService {
     const token = await this.resetPasswordTokenService.findOneByToken(
       resetToken,
     );
+    console.log('token', token);
     if (!token) {
       throw new HttpException('Token not found', 400);
     }
@@ -80,7 +83,7 @@ export class AuthService {
       ...user,
       password: await bcrypt.hash(resetPasswordDto.password, 10),
     });
-    await this.resetPasswordTokenService.remove(token.id);
+    // await this.resetPasswordTokenService.remove(token.id);
     await this.mailService.sendConfirmResetPasswordMail(user.email);
     return updateUser;
   }
