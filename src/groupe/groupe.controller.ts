@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { GroupeService } from './groupe.service';
 import { CreateGroupeDto } from './dto/create-groupe.dto';
@@ -14,7 +15,7 @@ import { UpdateGroupeDto } from './dto/update-groupe.dto';
 
 @Controller('groupes')
 export class GroupeController {
-  constructor(private readonly groupeService: GroupeService) {}
+  constructor(private groupeService: GroupeService) {}
 
   @Post()
   create(@Body() createGroupeDto: CreateGroupeDto) {
@@ -22,8 +23,12 @@ export class GroupeController {
   }
 
   @Get()
-  findAll() {
-    return this.groupeService.findAll();
+  findAll(@Query('postalCode') postalCode: string) {
+    if (postalCode) {
+      return this.groupeService.findByPostalCode(postalCode);
+    } else {
+      return this.groupeService.findAll();
+    }
   }
 
   @Get(':id')
@@ -43,4 +48,9 @@ export class GroupeController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.groupeService.remove(id);
   }
+
+  // @Get('filter')
+  // findByPostalCode(@Query('postalCode') postalCode: string) {
+  //   return this.groupeService.findByPostalCode(postalCode);
+  // }
 }

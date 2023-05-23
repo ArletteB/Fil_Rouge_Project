@@ -51,6 +51,21 @@ export class UserEntity {
   })
   gender: string;
 
+  @Column({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  address: string;
+
+  city: string;
+
+  @Column({
+    nullable: true,
+  })
+  postalCode: string;
+
   @ManyToMany(() => GroupeEntity, (groupe) => groupe.users)
   groupes: GroupeEntity[];
 

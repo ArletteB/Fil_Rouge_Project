@@ -56,4 +56,16 @@ export class GroupeService {
     await this.groupeRepository.softRemove(groupe);
     return groupe;
   }
+
+  async findByPostalCode(postalCode: string) {
+    try {
+      const group = await this.groupeRepository
+        .createQueryBuilder('groupe')
+        .where('groupe.postalCode = :postalCode', { postalCode })
+        .getMany();
+      return group;
+    } catch (error) {
+      throw new Error('Error while getting groups');
+    }
+  }
 }

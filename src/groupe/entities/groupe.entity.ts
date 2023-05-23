@@ -23,6 +23,12 @@ export class GroupeEntity extends Timestamp {
   @Column()
   cover: string;
 
+  @Column()
+  city: string;
+
+  @Column()
+  postalCode: string;
+
   @OneToMany(() => PostEntity, (post) => post.groupe)
   posts: PostEntity[];
 
