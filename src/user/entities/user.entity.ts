@@ -14,9 +14,6 @@ import {
 
 @Entity('user')
 export class UserEntity {
-  comparePassword(password: string) {
-    throw new Error('Method not implemented.');
-  }
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -54,11 +51,11 @@ export class UserEntity {
   @Column({
     nullable: true,
   })
+  address: string;
+
   @Column({
     nullable: true,
   })
-  address: string;
-
   city: string;
 
   @Column({

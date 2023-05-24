@@ -40,4 +40,13 @@ export class UserController {
   remove(@Param('id') id: string) {
     return this.userService.softRemove(id);
   }
+
+  @Post(':userId/group/:groupId')
+  joinGroup(
+    @Param('userId') userId: string,
+    @Param('groupId', ParseIntPipe) groupId: number,
+  ) {
+    console.log(userId, groupId);
+    return this.userService.joinGroup(userId, groupId);
+  }
 }

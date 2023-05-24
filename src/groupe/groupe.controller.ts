@@ -48,9 +48,4 @@ export class GroupeController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.groupeService.remove(id);
   }
-
-  // @Get('filter')
-  // findByPostalCode(@Query('postalCode') postalCode: string) {
-  //   return this.groupeService.findByPostalCode(postalCode);
-  // }
 }

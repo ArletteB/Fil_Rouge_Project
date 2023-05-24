@@ -5,12 +5,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { GroupeEntity } from 'src/groupe/entities/groupe.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(GroupeEntity)
+    private groupeRepository: Repository<GroupeEntity>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -23,7 +26,7 @@ export class UserService {
   }
 
   async findOneByEmail(email: string): Promise<UserEntity> {
-    return await this.userRepository.findOneBy({ email });
+    return await this.userRepository.findOne({ where: { email } });
   }
 
   async findAll() {
@@ -31,7 +34,7 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    return await this.userRepository.findOneBy({ id });
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
@@ -53,6 +56,34 @@ export class UserService {
     } catch (error) {
       console.log(error);
       throw new Error('Error while updating password');
+    }
+  }
+
+  async joinGroup(userId: string, groupId: number) {
+    try {
+      const user = await this.userRepository
+        .createQueryBuilder('user')
+        .where('user.id = :id', { id: userId })
+        .getOne();
+      console.log(user);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const group = await this.groupeRepository.findOne({
+        where: { id: groupId },
+      });
+
+      if (!group) {
+        throw new Error('Group not found');
+      }
+
+      // user.groupes.push(group);
+      await this.userRepository.save(user);
+
+      return user;
+    } catch (error) {
+      throw new Error('Error while joining group');
     }
   }
 }
