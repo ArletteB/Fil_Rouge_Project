@@ -6,6 +6,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   OneToMany,
   OneToOne,
@@ -64,6 +65,7 @@ export class UserEntity {
   postalCode: string;
 
   @ManyToMany(() => GroupeEntity, (groupe) => groupe.users)
+  @JoinTable()
   groupes: GroupeEntity[];
 
   @OneToMany(() => CommentEntity, (comment) => comment.auhtor)

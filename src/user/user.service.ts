@@ -64,6 +64,7 @@ export class UserService {
       const user = await this.userRepository
         .createQueryBuilder('user')
         .where('user.id = :id', { id: userId })
+        .leftJoinAndSelect('user.groupes', 'groupes')
         .getOne();
       console.log(user);
       if (!user) {
@@ -77,9 +78,8 @@ export class UserService {
       if (!group) {
         throw new Error('Group not found');
       }
+      user.groupes.push(group);
 
-      //  A revoir losqu'on tente d'ajouter le user au groupe cela bloque et renvoie une erreur lors des tests sur postman
-      // user.groupes.push(group);
       await this.userRepository.save(user);
 
       return user;
