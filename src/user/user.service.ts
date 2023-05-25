@@ -78,6 +78,7 @@ export class UserService {
         throw new Error('Group not found');
       }
 
+      //  A revoir losqu'on tente d'ajouter le user au groupe cela bloque et renvoie une erreur lors des tests sur postman
       // user.groupes.push(group);
       await this.userRepository.save(user);
 

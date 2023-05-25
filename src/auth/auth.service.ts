@@ -69,7 +69,7 @@ export class AuthService {
 
   async resetPassword(resetToken: string, resetPasswordDto: ResetPasswordDto) {
     const token = await this.resetPasswordTokenService.findOneByToken(
-      resetToken,
+      resetToken.slice(0, -1),
     );
     console.log('token', token);
     if (!token) {
