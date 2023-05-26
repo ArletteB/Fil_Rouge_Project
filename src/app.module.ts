@@ -10,6 +10,8 @@ import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
 // import { PasswordModule } from './password/password.module';
 import { MailModule } from './mail/mail.module';
+import { EventModule } from './event/event.module';
+import { LikeModule } from './like/like.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { MailModule } from './mail/mail.module';
     PostModule,
     CommentModule,
     MailModule,
+    EventModule,
+    LikeModule,
     // PasswordModule,
   ],
   controllers: [AppController],

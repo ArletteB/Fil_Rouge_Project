@@ -15,5 +15,5 @@ export class CommentEntity extends Timestamp {
   post: PostEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.comments)
-  auhtor: UserEntity;
+  author: UserEntity;
 }

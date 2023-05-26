@@ -1,3 +1,4 @@
+import { LikeEntity } from 'src/like/entities/like.entity';
 import { CommentEntity } from '../../comment/entities/comment.entity';
 import { Timestamp } from '../../Generic/timestamp.entity';
 import { GroupeEntity } from '../../groupe/entities/groupe.entity';
@@ -5,6 +6,7 @@ import { UserEntity } from '../../user/entities/user.entity';
 import {
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -32,4 +34,7 @@ export class PostEntity extends Timestamp {
 
   @ManyToOne(() => UserEntity, (user) => user.posts)
   author: UserEntity;
+
+  @OneToMany(() => LikeEntity, (like) => like.post)
+  likes: LikeEntity[];
 }

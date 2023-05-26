@@ -7,25 +7,25 @@ import {
   Entity,
   JoinColumn,
   JoinTable,
+  Like,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { EventEntity } from 'src/event/entities/event.entity';
+import { LikeEntity } from 'src/like/entities/like.entity';
 
 @Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   firstName: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   lastName: string;
 
   @Column({ unique: true })
@@ -49,26 +49,23 @@ export class UserEntity {
   })
   gender: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   address: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   city: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   postalCode: string;
+
+  @Column()
+  phoneNumber: string;
 
   @ManyToMany(() => GroupeEntity, (groupe) => groupe.users)
   @JoinTable()
   groupes: GroupeEntity[];
 
-  @OneToMany(() => CommentEntity, (comment) => comment.auhtor)
+  @OneToMany(() => CommentEntity, (comment) => comment.author)
   comments: CommentEntity[];
 
   @OneToMany(() => PostEntity, (comment) => comment.author)
@@ -77,4 +74,14 @@ export class UserEntity {
   @OneToOne(() => ResetPasswordTokenEntity)
   @JoinColumn()
   resetPasswordToken: ResetPasswordTokenEntity;
+
+  @OneToMany(() => EventEntity, (event) => event.CreatorEvent)
+  events: EventEntity[];
+
+  @ManyToMany(() => EventEntity, (event) => event.participants)
+  @JoinTable()
+  eventsParticipated: EventEntity[];
+
+  @OneToMany(() => LikeEntity, (like) => like.user)
+  likes: LikeEntity[];
 }
