@@ -34,7 +34,6 @@ export class GroupeService {
     try {
       const groupe = await this.groupeRepository
         .createQueryBuilder('groupe')
-        .leftJoinAndSelect('groupe.posts', 'groupe.users', 'post')
         .where('groupe.id = :id', { id })
         .getOne();
 

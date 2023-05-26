@@ -5,4 +5,6 @@ export class UpdateGroupeDto extends PartialType(CreateGroupeDto) {
   name?: string;
   description?: string;
   cover?: string;
+  postalCode?: string;
+  city?: string;
 }

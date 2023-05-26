@@ -41,12 +41,11 @@ export class UserController {
     return this.userService.softRemove(id);
   }
 
-  @Post(':userId/group/:groupId')
+  @Patch(':userId/group/:groupId')
   joinGroup(
     @Param('userId') userId: string,
     @Param('groupId', ParseIntPipe) groupId: number,
   ) {
-    console.log(userId, groupId);
     return this.userService.joinGroup(userId, groupId);
   }
 }
