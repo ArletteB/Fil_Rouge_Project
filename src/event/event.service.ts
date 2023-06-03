@@ -1,10 +1,16 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventEntity } from './entities/event.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { AddParticipantsDto } from './dto/addParticipant-event.dto';
 
 @Injectable()
 export class EventService {
@@ -23,6 +29,7 @@ export class EventService {
     event.cover = createEventDto.cover;
     event.dateEvent = createEventDto.dateEvent;
     event.description = createEventDto.description;
+    event.adress = createEventDto.adress;
 
     const creatorUser = await this.userRepository.findOne({
       where: { id: creatorUserId },
@@ -47,23 +54,62 @@ export class EventService {
     }
   }
 
-  findOneById(id: number) {
+  async findOneById(id: string) {
     try {
-      const event = this.eventRepository
+      const event = await this.eventRepository
         .createQueryBuilder('event')
         .where('event.id = :id', { id })
         .getOne();
+
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
+
       return event;
     } catch (error) {
       throw new Error('Error while getting event');
     }
   }
 
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+  async update(id: string, updateEventDto: UpdateEventDto) {
+    const event = await this.eventRepository.findOneBy({ id });
+    const updatedEvent = { ...event, ...updateEventDto };
+    await this.eventRepository.save(updatedEvent);
+    return updatedEvent;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  async remove(id: string) {
+    const event = await this.findOneById(id);
+    await this.eventRepository.softRemove(event);
+    return event;
+  }
+
+  async addParticipants(
+    eventId: string,
+    addParticipantsDto: AddParticipantsDto,
+  ) {
+    const event = await this.eventRepository
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.participants', 'participants')
+      .where('event.id = :eventId', { eventId })
+      .getOne();
+
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+
+    const participantsToAdd = await this.userRepository.find({
+      where: { id: In(addParticipantsDto.participants) },
+    });
+
+    if (!participantsToAdd || participantsToAdd.length === 0) {
+      throw new BadRequestException('Invalid participants');
+    }
+
+    event.participants.push(...participantsToAdd);
+
+    await this.eventRepository.save(event);
+
+    return event;
   }
 }

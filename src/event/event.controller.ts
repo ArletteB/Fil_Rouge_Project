@@ -11,6 +11,7 @@ import {
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { AddParticipantsDto } from './dto/addParticipant-event.dto';
 
 @Controller('events')
 export class EventController {
@@ -29,17 +30,25 @@ export class EventController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id') id: string) {
     return this.eventService.findOneById(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventService.update(+id, updateEventDto);
+    return this.eventService.update(id, updateEventDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.eventService.remove(+id);
+    return this.eventService.remove(id);
+  }
+
+  @Post(':eventId/participants')
+  addParticipants(
+    @Param('eventId') eventId: string,
+    @Body() addParticipantsDto: AddParticipantsDto,
+  ) {
+    return this.eventService.addParticipants(eventId, addParticipantsDto);
   }
 }
