@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { CreateGroupeDto } from './dto/create-groupe.dto';
 import { UpdateGroupeDto } from './dto/update-groupe.dto';
 import { GroupeEntity } from './entities/groupe.entity';
+import { PostEntity } from 'src/post/entities/post.entity';
 
 @Injectable()
 export class GroupeService {
   constructor(
     @InjectRepository(GroupeEntity)
     private readonly groupeRepository: Repository<GroupeEntity>,
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
   ) {}
   async create(createGroupeDto: CreateGroupeDto) {
     try {
@@ -24,6 +27,7 @@ export class GroupeService {
     try {
       const groupes = await this.groupeRepository
         .createQueryBuilder('gorupe')
+
         .getMany();
       return groupes;
     } catch (error) {
@@ -34,6 +38,7 @@ export class GroupeService {
     try {
       const groupe = await this.groupeRepository
         .createQueryBuilder('groupe')
+        .leftJoinAndSelect('groupe.posts', 'post')
         .where('groupe.id = :id', { id })
         .getOne();
 
@@ -65,6 +70,24 @@ export class GroupeService {
       return group;
     } catch (error) {
       throw new Error('Error while getting groups');
+    }
+  }
+
+  async getPostsByGroupId(groupId: number) {
+    try {
+      const groupe = await this.groupeRepository
+        .createQueryBuilder('groupe')
+        .leftJoinAndSelect('groupe.posts', 'post')
+        .where('groupe.id = :groupId', { groupId })
+        .getOne();
+
+      if (!groupe) {
+        throw new Error('Group not found');
+      }
+
+      return groupe.posts;
+    } catch (error) {
+      throw new Error('Error while getting posts by group ID');
     }
   }
 }

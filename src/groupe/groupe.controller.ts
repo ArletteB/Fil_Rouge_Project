@@ -48,4 +48,9 @@ export class GroupeController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.groupeService.remove(id);
   }
+
+  @Get(':id/posts')
+  getPostsByGroupId(@Param('id', ParseIntPipe) id: number) {
+    return this.groupeService.getPostsByGroupId(id);
+  }
 }
