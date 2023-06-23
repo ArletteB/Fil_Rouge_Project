@@ -12,14 +12,27 @@ import {
 import { GroupeService } from './groupe.service';
 import { CreateGroupeDto } from './dto/create-groupe.dto';
 import { UpdateGroupeDto } from './dto/update-groupe.dto';
+import { PostService } from 'src/post/post.service';
+import { PostCreateDto } from 'src/post/dto/post-create.dto';
 
 @Controller('groupes')
 export class GroupeController {
-  constructor(private groupeService: GroupeService) {}
+  constructor(
+    private groupeService: GroupeService,
+    private postService: PostService,
+  ) {}
 
   @Post()
-  create(@Body() createGroupeDto: CreateGroupeDto) {
-    return this.groupeService.create(createGroupeDto);
+  async create(@Body() createGroupeDto: CreateGroupeDto) {
+    const groupe = await this.groupeService.create(createGroupeDto);
+    const postCreateDto: PostCreateDto = {
+      legend: 'Nouveau post',
+      description: '',
+      image: '',
+    };
+    await this.postService.create(postCreateDto);
+
+    return groupe;
   }
 
   @Get()

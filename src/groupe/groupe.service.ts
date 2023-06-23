@@ -5,6 +5,8 @@ import { CreateGroupeDto } from './dto/create-groupe.dto';
 import { UpdateGroupeDto } from './dto/update-groupe.dto';
 import { GroupeEntity } from './entities/groupe.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
+import { PostCreateDto } from 'src/post/dto/post-create.dto';
+import { PostService } from 'src/post/post.service';
 
 @Injectable()
 export class GroupeService {
@@ -13,6 +15,7 @@ export class GroupeService {
     private readonly groupeRepository: Repository<GroupeEntity>,
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
+    private postService: PostService,
   ) {}
   async create(createGroupeDto: CreateGroupeDto) {
     try {
@@ -89,5 +92,19 @@ export class GroupeService {
     } catch (error) {
       throw new Error('Error while getting posts by group ID');
     }
+  }
+
+  async createPost(groupId: number, postCreateDto: PostCreateDto) {
+    const groupe = await this.groupeRepository.findOneBy({ id: groupId });
+
+    if (!groupe) {
+      throw new Error('Group not found');
+    }
+
+    const post = await this.postService.create(postCreateDto);
+    groupe.posts.push(post);
+
+    await this.groupeRepository.save(groupe);
+    return post;
   }
 }

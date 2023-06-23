@@ -12,11 +12,12 @@ export class PostService {
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async create(PostCreateDto: PostCreateDto) {
+  async create(postCreateDto: PostCreateDto) {
     try {
-      return await this.postRepository.save(PostCreateDto);
+      const post = this.postRepository.create(postCreateDto);
+      return await this.postRepository.save(post);
     } catch (error) {
-      throw new Error('Error for creating post ');
+      throw new Error('Error while creating post');
     }
   }
 
