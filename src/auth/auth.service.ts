@@ -30,7 +30,7 @@ export class AuthService {
       const { password, ...result } = user;
       return result;
     } else {
-      throw new Error('Invalid email or password');
+      throw new BadRequestException('Invalid email or password');
     }
   }
 
