@@ -46,7 +46,7 @@ export class AuthService {
   async signin(signinAuthDto: SigninAuthDto) {
     // signin => se connecter
     const user = await this.validateUser(signinAuthDto);
-    const payload = { email: user.email, sub: user.id };
+    const payload = { ...user };
     return {
       access_token: this.generateJwtToken(payload),
     };
