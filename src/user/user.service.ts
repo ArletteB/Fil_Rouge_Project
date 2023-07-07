@@ -87,4 +87,15 @@ export class UserService {
       throw new Error('Error while joining group');
     }
   }
+
+  async isUserInGroup(userId: string, groupId: number): Promise<boolean> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.groupes', 'groupes')
+      .where('user.id = :userId', { userId })
+      .andWhere('groupes.id = :groupId', { groupId })
+      .getOne();
+
+    return !!user;
+  }
 }

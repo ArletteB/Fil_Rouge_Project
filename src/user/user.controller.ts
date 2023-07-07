@@ -48,4 +48,13 @@ export class UserController {
   ) {
     return this.userService.joinGroup(userId, groupId);
   }
+
+  @Get(':id/groups/:groupId')
+  async isUserInGroup(
+    @Param('id') userId: string,
+    @Param('groupId', ParseIntPipe) groupId: number,
+  ): Promise<{ isInGroup: boolean }> {
+    const isInGroup = await this.userService.isUserInGroup(userId, groupId);
+    return { isInGroup };
+  }
 }

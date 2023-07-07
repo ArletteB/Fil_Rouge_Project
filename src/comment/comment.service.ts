@@ -1,20 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentEntity } from './entities/comment.entity';
+import { PostEntity } from 'src/post/entities/post.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(CommentEntity)
     private readonly commentRepository: Repository<CommentEntity>,
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   async create(createCommentDto: CreateCommentDto) {
     try {
-      return await this.commentRepository.save(createCommentDto);
+      const { content, postId, userId } = createCommentDto;
+
+      const post = await this.postRepository.findOne({
+        where: { id: postId },
+      } as FindOneOptions<PostEntity>);
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+      } as FindOneOptions<UserEntity>);
+
+      if (!post || !user) {
+        throw new Error('Post or user not found');
+      }
+
+      const comment = this.commentRepository.create({
+        content,
+        post,
+        author: user,
+      });
+
+      return await this.commentRepository.save(comment);
     } catch (error) {
       throw new Error('Error comment not created');
     }
