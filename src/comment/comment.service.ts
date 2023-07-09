@@ -6,6 +6,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentEntity } from './entities/comment.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class CommentService {
@@ -16,11 +17,12 @@ export class CommentService {
     private readonly postRepository: Repository<PostEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private userService: UserService,
   ) {}
 
   async create(createCommentDto: CreateCommentDto) {
     try {
-      const { content, postId, userId } = createCommentDto;
+      const { content, postId, userId, groupId } = createCommentDto;
 
       const post = await this.postRepository.findOne({
         where: { id: postId },
@@ -31,6 +33,12 @@ export class CommentService {
 
       if (!post || !user) {
         throw new Error('Post or user not found');
+      }
+
+      // Vérifier si l'utilisateur fait partie du groupe
+      const isInGroup = await this.userService.isUserInGroup(userId, groupId);
+      if (!isInGroup) {
+        throw new Error('User is not a member of the group');
       }
 
       const comment = this.commentRepository.create({
