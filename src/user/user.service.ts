@@ -95,7 +95,7 @@ export class UserService {
       .where('user.id = :userId', { userId })
       .andWhere('groupes.id = :groupId', { groupId })
       .getOne();
-
+    console.log(user);
     return !!user;
   }
 }

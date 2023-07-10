@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { PostCreateDto } from './dto/post-create.dto';
 import { PostUpdateDto } from './dto/post-update.dto';
 import { PostEntity } from './entities/post.entity';
+import { GroupeEntity } from 'src/groupe/entities/groupe.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
+    @InjectRepository(GroupeEntity)
+    private readonly groupeRepository: Repository<GroupeEntity>,
   ) {}
 
   async create(postCreateDto: PostCreateDto) {
@@ -22,7 +25,10 @@ export class PostService {
   }
 
   findAll() {
-    return this.postRepository.createQueryBuilder('post').getMany();
+    return this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.groupe', 'groupe')
+      .getMany();
   }
 
   async findOneById(id: number) {

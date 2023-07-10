@@ -22,7 +22,7 @@ export class CommentService {
 
   async create(createCommentDto: CreateCommentDto) {
     try {
-      const { content, postId, userId, groupId } = createCommentDto;
+      const { content, postId, userId } = createCommentDto;
 
       const post = await this.postRepository.findOne({
         where: { id: postId },
@@ -36,10 +36,10 @@ export class CommentService {
       }
 
       // Vérifier si l'utilisateur fait partie du groupe
-      const isInGroup = await this.userService.isUserInGroup(userId, groupId);
-      if (!isInGroup) {
-        throw new Error('User is not a member of the group');
-      }
+      // const isInGroup = await this.userService.isUserInGroup(userId);
+      // if (!isInGroup) {
+      //   throw new Error('User is not a member of the group');
+      // }
 
       const comment = this.commentRepository.create({
         content,
@@ -55,6 +55,14 @@ export class CommentService {
 
   findAll() {
     return this.commentRepository.createQueryBuilder('comment').getMany();
+  }
+  async findAllByPostId(post_id: number) {
+    return await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.post', 'post')
+      .leftJoinAndSelect('comment.author', 'author')
+      .where('post.id = :post_id', { post_id })
+      .getMany();
   }
 
   async findOneById(id: number) {
