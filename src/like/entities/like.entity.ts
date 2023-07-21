@@ -13,9 +13,9 @@ export class LikeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  user: UserEntity[];
+  @ManyToOne(() => UserEntity, (user) => user.likes)
+  user: UserEntity;
 
-  @ManyToOne(() => PostEntity, (post) => post.id)
-  post: PostEntity[];
+  @ManyToOne(() => PostEntity, (post) => post.likes)
+  post: PostEntity;
 }

@@ -43,7 +43,7 @@ export class CommentService {
 
       const comment = this.commentRepository.create({
         content,
-        post,
+        post: post,
         author: user,
       });
 

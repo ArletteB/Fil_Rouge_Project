@@ -8,7 +8,6 @@ import { UserModule } from './user/user.module';
 import { GroupeModule } from './groupe/groupe.module';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
-// import { PasswordModule } from './password/password.module';
 import { MailModule } from './mail/mail.module';
 import { EventModule } from './event/event.module';
 import { LikeModule } from './like/like.module';
@@ -35,7 +34,6 @@ import { LikeModule } from './like/like.module';
     MailModule,
     EventModule,
     LikeModule,
-    // PasswordModule,
   ],
   controllers: [AppController],
   providers: [AppService],

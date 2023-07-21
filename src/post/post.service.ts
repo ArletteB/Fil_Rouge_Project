@@ -25,10 +25,13 @@ export class PostService {
   }
 
   findAll() {
-    return this.postRepository
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.groupe', 'groupe')
-      .getMany();
+    return (
+      this.postRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.groupe', 'groupe')
+        // .leftJoinAndSelect('post.likes', 'likes')
+        .getMany()
+    );
   }
 
   async findOneById(id: number) {

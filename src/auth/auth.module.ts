@@ -24,7 +24,7 @@ import { ResetPasswordTokenModule } from './reset-password/reset-password-token.
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '90s' },
+      signOptions: { expiresIn: '800s' },
     }),
     ResetPasswordTokenModule,
   ],

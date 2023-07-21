@@ -26,7 +26,6 @@ export class AuthService {
       user.password,
     );
     if (user && validPassword) {
-      // TODO:  Cacher le password plutard
       const { password, ...result } = user;
       return result;
     } else {
@@ -46,7 +45,9 @@ export class AuthService {
   async signin(signinAuthDto: SigninAuthDto) {
     // signin => se connecter
     const user = await this.validateUser(signinAuthDto);
+
     const payload = { ...user };
+    console.log('payload', payload);
     return {
       access_token: this.generateJwtToken(payload),
     };
