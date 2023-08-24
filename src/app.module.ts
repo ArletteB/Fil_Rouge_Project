@@ -11,6 +11,7 @@ import { CommentModule } from './comment/comment.module';
 import { MailModule } from './mail/mail.module';
 import { EventModule } from './event/event.module';
 import { LikeModule } from './like/like.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { LikeModule } from './like/like.module';
     MailModule,
     EventModule,
     LikeModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
