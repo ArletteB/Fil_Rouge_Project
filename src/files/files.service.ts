@@ -30,7 +30,7 @@ export class FilesService {
 
       return { message: 'File uploaded successfully', metadata: data };
     } catch (error) {
-      throw new Error('File upload failed');
+      throw new Error(`File upload failed: ${error.message}`);
     }
   }
 
