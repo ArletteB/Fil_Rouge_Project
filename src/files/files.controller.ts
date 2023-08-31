@@ -19,10 +19,10 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
-  @Post()
-  create(@Body() uploadFileDto: UploadFileDto) {
-    return this.filesService.create(uploadFileDto);
-  }
+  // @Post()
+  // create(@Body() uploadFileDto: UploadFileDto) {
+  //   return this.filesService.create(uploadFileDto);
+  // }
 
   @Post('upload')
   @UseGuards(JwtAuthGuard)
@@ -32,23 +32,23 @@ export class FilesController {
     return { message: 'File uploaded successfully' };
   }
 
-  @Get()
-  findAll() {
-    return this.filesService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.filesService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.filesService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.filesService.findOne(+id);
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() UploadFileDto: UploadFileDto) {
-    return this.filesService.update(+id, UploadFileDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() UploadFileDto: UploadFileDto) {
+  //   return this.filesService.update(+id, UploadFileDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.filesService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.filesService.remove(+id);
+  // }
 }

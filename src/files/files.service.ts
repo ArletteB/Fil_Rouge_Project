@@ -17,16 +17,18 @@ export class FilesService {
   @UseGuards(JwtAuthGuard)
   async uploadFile(@UploadedFile() file: any) {
     try {
+      console.log('file', file.originalname);
+      const filePath = Date.now() + '-' + file.originalname;
+
+      console.log('file', file.originalname);
+
       const { data, error } = await this.supabase.storage
         .from('post')
-        .upload(file.originalname, file.buffer);
+        .upload(filePath, file.buffer);
 
       if (error) {
         throw new Error(error.message);
       }
-
-      // Si besoin, vous pouvez enregistrer les métadonnées dans la base de données
-      // Ensuite, vous pourriez retourner ces métadonnées ou un message de succès
 
       return { message: 'File uploaded successfully', metadata: data };
     } catch (error) {

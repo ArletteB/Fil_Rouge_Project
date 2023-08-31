@@ -20,7 +20,8 @@ export class PostService {
       const post = this.postRepository.create(postCreateDto);
 
       // Build the complete image URL
-      const completeImageUrl = `${process.env.API_SUPABASE_URL}/storage/post/${postCreateDto.image}`;
+      console.log('postCreateDto.image', postCreateDto.image);
+      const completeImageUrl = `${process.env.API_SUPABASE_POST_URL}/${postCreateDto.image}`;
 
       // Assign the complete image URL to the post's image property
       post.image = completeImageUrl;
