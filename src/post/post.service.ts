@@ -33,13 +33,12 @@ export class PostService {
   }
 
   findAll() {
-    return (
-      this.postRepository
-        .createQueryBuilder('post')
-        .leftJoinAndSelect('post.groupe', 'groupe')
-        // .leftJoinAndSelect('post.likes', 'likes')
-        .getMany()
-    );
+    return this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.groupe', 'groupe')
+      .orderBy('groupe.id', 'ASC')
+      .addOrderBy('post.id', 'DESC')
+      .getMany();
   }
 
   async findOneById(id: number) {

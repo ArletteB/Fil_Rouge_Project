@@ -38,13 +38,6 @@ export class LikeService {
       if (!post || !user) {
         throw new Error('Post or user not found');
       }
-      // const isUserInGroup = await this.userService.isUserInGroup(
-      //   userId,
-      //   post.groupe.id,
-      // );
-      // if (!isUserInGroup) {
-      //   throw new Error('User is not a member of the group');
-      // }
 
       const like = this.likeRepository.create({
         user: user,
