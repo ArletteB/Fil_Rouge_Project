@@ -24,6 +24,7 @@ export class EventController {
   ) {
     return this.eventService.createEvent(createEventDto, creatorUserId);
   }
+
   @Get()
   findAll() {
     return this.eventService.findAll();

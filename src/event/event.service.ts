@@ -19,16 +19,19 @@ export class EventService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
   ) {}
+
   async createEvent(
     createEventDto: CreateEventDto,
     creatorUserId: string,
   ): Promise<EventEntity> {
     const event = new EventEntity();
     event.title = createEventDto.title;
-    event.cover = createEventDto.cover;
     event.dateEvent = createEventDto.dateEvent;
     event.description = createEventDto.description;
     event.adress = createEventDto.adress;
+
+    const completeImageUrl = `${process.env.API_SUPABASE_EVENT_URL}/${createEventDto.cover}`;
+    event.cover = completeImageUrl;
 
     const creatorUser = await this.userRepository.findOne({
       where: { id: creatorUserId },
@@ -46,6 +49,8 @@ export class EventService {
     try {
       const events = await this.eventRepository
         .createQueryBuilder('event')
+        .leftJoinAndSelect('event.CreatorEvent', 'CreatorEvent')
+        .orderBy('event.id', 'DESC')
         .getMany();
       return events;
     } catch (error) {
