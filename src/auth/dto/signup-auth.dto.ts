@@ -6,7 +6,7 @@ export class SignupAuthDto {
   address: string;
   city: string;
   postalCode: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   imgProfile?: string;
   bio?: string;
   gender?: string;

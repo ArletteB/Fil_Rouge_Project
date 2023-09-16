@@ -24,25 +24,29 @@ export class EventService {
     createEventDto: CreateEventDto,
     creatorUserId: string,
   ): Promise<EventEntity> {
-    const event = new EventEntity();
-    event.title = createEventDto.title;
-    event.dateEvent = createEventDto.dateEvent;
-    event.description = createEventDto.description;
-    event.adress = createEventDto.adress;
+    try {
+      const event = new EventEntity();
+      event.title = createEventDto.title;
+      event.dateEvent = createEventDto.dateEvent;
+      event.description = createEventDto.description;
+      event.adress = createEventDto.adress;
 
-    const completeImageUrl = `${process.env.API_SUPABASE_EVENT_URL}/${createEventDto.cover}`;
-    event.cover = completeImageUrl;
+      const completeImageUrl = `${process.env.API_SUPABASE_EVENT_URL}/${createEventDto.cover}`;
+      event.cover = completeImageUrl;
 
-    const creatorUser = await this.userRepository.findOne({
-      where: { id: creatorUserId },
-    });
-    if (!creatorUser) {
-      throw new Error('Creator user not found');
+      const creatorUser = await this.userRepository.findOne({
+        where: { id: creatorUserId },
+      });
+      if (!creatorUser) {
+        throw new Error('Creator user not found');
+      }
+
+      event.CreatorEvent = creatorUser;
+
+      return await this.eventRepository.save(event);
+    } catch (error) {
+      throw new Error('Error' + error.message + 'while creating event');
     }
-
-    event.CreatorEvent = creatorUser;
-
-    return await this.eventRepository.save(event);
   }
 
   async findAll() {
@@ -54,7 +58,7 @@ export class EventService {
         .getMany();
       return events;
     } catch (error) {
-      throw new Error('Error while getting events');
+      throw new Error('Error while getting events' + error.message);
     }
   }
 

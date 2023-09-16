@@ -21,7 +21,7 @@ export class UserService {
       createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
       return await this.userRepository.save(createUserDto);
     } catch (error) {
-      throw new Error('Error while creating user');
+      throw new Error('error' + error);
     }
   }
 

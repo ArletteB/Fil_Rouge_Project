@@ -58,7 +58,9 @@ export class UserEntity {
   @Column()
   postalCode: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   phoneNumber: string;
 
   @ManyToMany(() => GroupeEntity, (groupe) => groupe.users)
