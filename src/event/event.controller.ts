@@ -45,11 +45,34 @@ export class EventController {
     return this.eventService.remove(id);
   }
 
-  @Post(':eventId/participants')
+  @Post(':eventId/participants/:userId')
   addParticipants(
+    @Param('eventId') eventId: string,
+    @Param('userId') userId: string,
+  ) {
+    try {
+      const result = this.eventService.addParticipants(eventId, userId);
+      return result;
+    } catch (error) {
+      throw new Error('Error while adding participant: ' + error.message);
+    }
+  }
+
+  @Post(':eventId/participants')
+  addParticipantToEvent(
     @Param('eventId') eventId: string,
     @Body() addParticipantsDto: AddParticipantsDto,
   ) {
-    return this.eventService.addParticipants(eventId, addParticipantsDto);
+    console.log(eventId);
+    console.log(addParticipantsDto.userId);
+    return this.eventService.addParticipant(eventId, addParticipantsDto);
+  }
+
+  @Post(':eventId/register/:userId')
+  async addUserToEvent(
+    @Param('eventId') eventId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.eventService.addUserToEvent(userId, eventId);
   }
 }

@@ -35,24 +35,4 @@ export class FilesService {
       throw new Error(`File upload failed: ${error.message}`);
     }
   }
-
-  create(uploadFileDto: UploadFileDto) {
-    return 'This action adds a new file';
-  }
-
-  findAll() {
-    return `This action returns all files`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
-
-  update(id: number, UploadFileDto: UploadFileDto) {
-    return `This action updates a #${id} file`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} file`;
-  }
 }

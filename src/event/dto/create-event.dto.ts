@@ -7,5 +7,3 @@ export class CreateEventDto {
   creatorUserId: string;
   participantIds?: string[];
 }
-
-// Pour les évenements ce sera en fonction du code postal ?

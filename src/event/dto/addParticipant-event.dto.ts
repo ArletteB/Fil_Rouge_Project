@@ -1,5 +1,3 @@
 export class AddParticipantsDto {
-  participants: string[];
+  userId: any;
 }
-
-// Pour les évenements ce sera en fonction du code postal ?

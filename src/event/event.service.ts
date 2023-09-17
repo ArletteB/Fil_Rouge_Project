@@ -92,30 +92,115 @@ export class EventService {
     return event;
   }
 
-  async addParticipants(
+  async addParticipants(eventId: string, userId: string) {
+    try {
+      const event = await this.eventRepository
+        .createQueryBuilder('event')
+        .leftJoinAndSelect('event.participants', 'participants')
+        .where('event.id = :eventId', { eventId })
+        .getOne();
+
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+
+      if (!event || !user) {
+        throw new NotFoundException('Event or user not found');
+      }
+
+      const isAlreadyParticipant = event.participants.some(
+        (participant) => participant.id === user.id,
+      );
+
+      if (isAlreadyParticipant) {
+        throw new BadRequestException(
+          'User is already registered for the event',
+        );
+      }
+
+      event.participants.push(user);
+      await this.eventRepository.save(event);
+
+      return 'User registered for the event';
+    } catch (error) {
+      throw new Error(
+        'Error while registering user for the event: ' + error.message,
+      );
+    }
+  }
+
+  async addParticipant(
     eventId: string,
     addParticipantsDto: AddParticipantsDto,
-  ) {
+  ): Promise<EventEntity> {
+    try {
+      const event = await this.eventRepository
+        .createQueryBuilder('event')
+        .leftJoinAndSelect('event.participants', 'participants')
+        .where('event.id = :eventId', { eventId: +eventId }) // Convertissez eventId en nombre
+        .getOneOrFail();
+
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
+
+      const userToAdd = await this.userRepository.findOne(
+        addParticipantsDto.userId,
+      );
+      if (!userToAdd) {
+        throw new NotFoundException('User not found');
+      }
+
+      // Vérifiez si l'utilisateur n'est pas déjà inscrit à l'événement
+      const isUserAlreadyParticipant = event.participants.some(
+        (participant) => participant.id === userToAdd.id,
+      );
+      console.log(isUserAlreadyParticipant);
+
+      if (isUserAlreadyParticipant) {
+        throw new BadRequestException(
+          'User is already a participant in this event',
+        );
+      }
+
+      event.participants.push(userToAdd);
+
+      return await this.eventRepository.save(event);
+    } catch (error) {
+      throw new Error(
+        'Error while adding participant to event: ' + error.message,
+      );
+    }
+  }
+
+  async addUserToEvent(userId: string, eventId: string): Promise<EventEntity> {
+    // Vérifiez si l'utilisateur et l'événement existent
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
     const event = await this.eventRepository
       .createQueryBuilder('event')
       .leftJoinAndSelect('event.participants', 'participants')
       .where('event.id = :eventId', { eventId })
       .getOne();
-
     if (!event) {
-      throw new NotFoundException('Event not found');
+      throw new NotFoundException(`Event with ID ${eventId} not found`);
     }
 
-    const participantsToAdd = await this.userRepository.find({
-      where: { id: In(addParticipantsDto.participants) },
-    });
-
-    if (!participantsToAdd || participantsToAdd.length === 0) {
-      throw new BadRequestException('Invalid participants');
+    // Assurez-vous que l'utilisateur n'est pas déjà inscrit à l'événement
+    const isUserAlreadyRegistered = event.participants.some(
+      (participant) => participant.id === userId,
+    );
+    if (isUserAlreadyRegistered) {
+      throw new Error(
+        `User with ID ${userId} is already registered for Event with ID ${eventId}`,
+      );
     }
 
-    event.participants.push(...participantsToAdd);
+    // Ajoutez l'utilisateur à la liste des participants de l'événement
+    event.participants.push(user);
 
+    // Enregistrez les modifications dans la base de données
     await this.eventRepository.save(event);
 
     return event;
