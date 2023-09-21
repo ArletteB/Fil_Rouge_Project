@@ -2,14 +2,16 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventEntity } from './entities/event.entity';
 import { In, Repository } from 'typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { AddParticipantsDto } from './dto/addParticipant-event.dto';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
 
 @Injectable()
 export class EventService {
@@ -20,12 +22,13 @@ export class EventService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   async createEvent(
     createEventDto: CreateEventDto,
     creatorUserId: string,
   ): Promise<EventEntity> {
     try {
-      const event = new EventEntity();
+      const event = this.eventRepository.create(createEventDto);
       event.title = createEventDto.title;
       event.dateEvent = createEventDto.dateEvent;
       event.description = createEventDto.description;
@@ -66,6 +69,7 @@ export class EventService {
     try {
       const event = await this.eventRepository
         .createQueryBuilder('event')
+        .leftJoinAndSelect('event.CreatorEvent', 'CreatorEvent') // Préchargez la relation du créateur
         .where('event.id = :id', { id })
         .getOne();
 
@@ -92,41 +96,6 @@ export class EventService {
     return event;
   }
 
-  async addParticipants(eventId: string, userId: string) {
-    try {
-      const event = await this.eventRepository
-        .createQueryBuilder('event')
-        .leftJoinAndSelect('event.participants', 'participants')
-        .where('event.id = :eventId', { eventId })
-        .getOne();
-
-      const user = await this.userRepository.findOne({ where: { id: userId } });
-
-      if (!event || !user) {
-        throw new NotFoundException('Event or user not found');
-      }
-
-      const isAlreadyParticipant = event.participants.some(
-        (participant) => participant.id === user.id,
-      );
-
-      if (isAlreadyParticipant) {
-        throw new BadRequestException(
-          'User is already registered for the event',
-        );
-      }
-
-      event.participants.push(user);
-      await this.eventRepository.save(event);
-
-      return 'User registered for the event';
-    } catch (error) {
-      throw new Error(
-        'Error while registering user for the event: ' + error.message,
-      );
-    }
-  }
-
   async addParticipant(
     eventId: string,
     addParticipantsDto: AddParticipantsDto,
@@ -137,23 +106,12 @@ export class EventService {
         .leftJoinAndSelect('event.participants', 'participants')
         .where('event.id = :eventId', { eventId: +eventId }) // Convertissez eventId en nombre
         .getOneOrFail();
-
-      if (!event) {
-        throw new NotFoundException('Event not found');
-      }
-
-      const userToAdd = await this.userRepository.findOne(
+      const userToAdd = await this.userRepository.findOneOrFail(
         addParticipantsDto.userId,
       );
-      if (!userToAdd) {
-        throw new NotFoundException('User not found');
-      }
-
-      // Vérifiez si l'utilisateur n'est pas déjà inscrit à l'événement
       const isUserAlreadyParticipant = event.participants.some(
         (participant) => participant.id === userToAdd.id,
       );
-      console.log(isUserAlreadyParticipant);
 
       if (isUserAlreadyParticipant) {
         throw new BadRequestException(
@@ -162,8 +120,9 @@ export class EventService {
       }
 
       event.participants.push(userToAdd);
+      await this.eventRepository.save(event);
 
-      return await this.eventRepository.save(event);
+      return event;
     } catch (error) {
       throw new Error(
         'Error while adding participant to event: ' + error.message,
@@ -172,8 +131,10 @@ export class EventService {
   }
 
   async addUserToEvent(userId: string, eventId: string): Promise<EventEntity> {
+    console.log('userId', userId);
     // Vérifiez si l'utilisateur et l'événement existent
     const user = await this.userRepository.findOne({ where: { id: userId } });
+
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }

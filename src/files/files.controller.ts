@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-passport.guard';
 
 @Controller('files')
 export class FilesController {

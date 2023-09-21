@@ -1,5 +1,5 @@
-import { Timestamp } from 'src/Generic/timestamp.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { Timestamp } from '../../../Generic/timestamp.entity';
+import { UserEntity } from '../../../user/entities/user.entity';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('reset-password-token')

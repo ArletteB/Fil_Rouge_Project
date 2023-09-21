@@ -1,4 +1,4 @@
-import { LikeEntity } from 'src/like/entities/like.entity';
+import { LikeEntity } from '../../like/entities/like.entity';
 import { CommentEntity } from '../../comment/entities/comment.entity';
 import { Timestamp } from '../../Generic/timestamp.entity';
 import { GroupeEntity } from '../../groupe/entities/groupe.entity';

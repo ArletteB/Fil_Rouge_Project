@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { PostCreateDto } from './dto/post-create.dto';
 import { PostUpdateDto } from './dto/post-update.dto';
 import { PostEntity } from './entities/post.entity';
-import { GroupeEntity } from 'src/groupe/entities/groupe.entity';
+import { GroupeEntity } from '../groupe/entities/groupe.entity';
 
 @Injectable()
 export class PostService {

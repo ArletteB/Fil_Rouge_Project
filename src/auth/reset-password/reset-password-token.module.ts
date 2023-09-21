@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { ResetPasswordTokenController } from './reset-password-token.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResetPasswordTokenEntity } from './entities/reset-password-token.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { UserService } from 'src/user/user.service';
+import { UserEntity } from '../../user/entities/user.entity';
+import { UserService } from '../../user/user.service';
 import { ResetPasswordTokenService } from './reset-password-token.service';
-import { GroupeEntity } from 'src/groupe/entities/groupe.entity';
+import { GroupeEntity } from '../../groupe/entities/groupe.entity';
 
 @Module({
   imports: [

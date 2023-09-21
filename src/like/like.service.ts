@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
-import { UserService } from 'src/user/user.service';
-import { PostService } from 'src/post/post.service';
+import { UserService } from '../user/user.service';
+import { PostService } from '../post/post.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PostEntity } from 'src/post/entities/post.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { PostEntity } from '../post/entities/post.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { FindOneOptions, Repository } from 'typeorm';
 import { LikeEntity } from './entities/like.entity';
 

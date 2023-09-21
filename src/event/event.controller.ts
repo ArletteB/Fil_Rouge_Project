@@ -45,26 +45,11 @@ export class EventController {
     return this.eventService.remove(id);
   }
 
-  @Post(':eventId/participants/:userId')
-  addParticipants(
-    @Param('eventId') eventId: string,
-    @Param('userId') userId: string,
-  ) {
-    try {
-      const result = this.eventService.addParticipants(eventId, userId);
-      return result;
-    } catch (error) {
-      throw new Error('Error while adding participant: ' + error.message);
-    }
-  }
-
   @Post(':eventId/participants')
   addParticipantToEvent(
     @Param('eventId') eventId: string,
     @Body() addParticipantsDto: AddParticipantsDto,
   ) {
-    console.log(eventId);
-    console.log(addParticipantsDto.userId);
     return this.eventService.addParticipant(eventId, addParticipantsDto);
   }
 

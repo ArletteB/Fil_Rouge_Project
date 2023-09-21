@@ -12,8 +12,8 @@ import {
 import { GroupeService } from './groupe.service';
 import { CreateGroupeDto } from './dto/create-groupe.dto';
 import { UpdateGroupeDto } from './dto/update-groupe.dto';
-import { PostService } from 'src/post/post.service';
-import { PostCreateDto } from 'src/post/dto/post-create.dto';
+import { PostService } from '../post/post.service';
+import { PostCreateDto } from '../post/dto/post-create.dto';
 
 @Controller('groupes')
 export class GroupeController {

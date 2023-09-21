@@ -1,4 +1,4 @@
-import { ResetPasswordTokenEntity } from 'src/auth/reset-password/entities/reset-password-token.entity';
+import { ResetPasswordTokenEntity } from '../../auth/reset-password/entities/reset-password-token.entity';
 import { CommentEntity } from '../../comment/entities/comment.entity';
 import { GroupeEntity } from '../../groupe/entities/groupe.entity';
 import { PostEntity } from '../../post/entities/post.entity';
@@ -14,8 +14,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { EventEntity } from 'src/event/entities/event.entity';
-import { LikeEntity } from 'src/like/entities/like.entity';
+import { EventEntity } from '../../event/entities/event.entity';
+import { LikeEntity } from '../../like/entities/like.entity';
 
 @Entity('user')
 export class UserEntity {

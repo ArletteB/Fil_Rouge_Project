@@ -5,13 +5,13 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './strategy/passport-jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { MailModule } from 'src/mail/mail.module';
+import { MailModule } from '../mail/mail.module';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { ResetPasswordTokenEntity } from './reset-password/entities/reset-password-token.entity';
 import { ResetPasswordTokenService } from './reset-password/reset-password-token.service';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import { ResetPasswordTokenModule } from './reset-password/reset-password-token.module';
 
 @Module({

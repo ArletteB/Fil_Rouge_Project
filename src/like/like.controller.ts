@@ -12,7 +12,6 @@ import {
 import { LikeService } from './like.service';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
-import { User } from 'src/decorator/user.decorator';
 
 @Controller('like')
 export class LikeController {

@@ -2,7 +2,7 @@ import { Injectable, UploadedFile, UseGuards } from '@nestjs/common';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { createClient } from '@supabase/supabase-js';
 import { ConfigService } from '@nestjs/config';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-passport.guard';
 
 @Injectable()
 export class FilesService {

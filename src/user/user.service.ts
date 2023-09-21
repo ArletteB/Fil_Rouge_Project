@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { GroupeEntity } from 'src/groupe/entities/groupe.entity';
+import { GroupeEntity } from '../groupe/entities/groupe.entity';
 
 @Injectable()
 export class UserService {

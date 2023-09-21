@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ResetPasswordTokenEntity } from './entities/reset-password-token.entity';
 import { Repository } from 'typeorm';
 import { createHmac } from 'crypto';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../../user/user.service';
 import { UpdateResetPasswordTokenDto } from './dto/update-reset-password.dto';
 
 @Injectable()
