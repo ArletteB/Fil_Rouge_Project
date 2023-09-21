@@ -17,12 +17,15 @@ export class GroupeService {
     private readonly postRepository: Repository<PostEntity>,
     private postService: PostService,
   ) {}
+
   async create(createGroupeDto: CreateGroupeDto) {
     try {
       const groupe = await this.groupeRepository.save(createGroupeDto);
+      const completeImageUrl = `${process.env.API_SUPABASE_GROUP_URL}/${createGroupeDto.cover}`;
+      groupe.cover = completeImageUrl;
       return groupe;
     } catch (error) {
-      throw new Error('Error while creating groupe');
+      throw new Error('Error while creating groupe' + error.message);
     }
   }
 

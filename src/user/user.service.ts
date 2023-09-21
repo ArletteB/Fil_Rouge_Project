@@ -98,4 +98,12 @@ export class UserService {
     console.log(user);
     return !!user;
   }
+
+  async findOneWithGroups(id: string) {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.groupes', 'groupes')
+      .where('user.id = :id', { id })
+      .getOne();
+  }
 }
